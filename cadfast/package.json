@@ -1,8 +1,8 @@
 {
-  "name": "payfast",
+  "name": "cadfast",
   "version": "1.0.0",
-  "description": "Um gateway para pagamento através de recurso HTTP.",
-  "main": "index.js",
+  "description": "Serviço de pagamento com cartão de crédito",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server"
@@ -15,7 +15,6 @@
     "express": "^4.15.3",
     "express-validator": "^3.2.0",
     "mysql": "^2.13.0",
-    "nodemon": "^1.11.0",
-    "restify": "^4.3.0"
+    "nodemon": "^1.11.0"
   }
 }

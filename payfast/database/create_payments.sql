@@ -1,10 +1,10 @@
-#docker run --name payfastdb -e MYSQL_ROOT_PASSWORD=test123 -p 3306:3306 mysql/mysql-server
+#docker run --name payfastdb -e MYSQL_ROOT_PASSWORD=test123 -p 3306:3306 -d mysql/mysql-server
 
 create database payfast;
 
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.99.1' IDENTIFIED BY 'test123';
-
 use payfast;
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.99.1' IDENTIFIED BY 'test123';
 
 drop table payments;
 

@@ -8,7 +8,6 @@ function createDBConnection() {
 		password: 'test123',
 		database: 'payfast'
 	});
-
 };
 
 module.exports = function() {

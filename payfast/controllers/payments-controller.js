@@ -3,6 +3,7 @@ module.exports = function(app) {
 	const PAGAMENTO_CRIADO = "CREATED";
 	const PAGAMENTO_CONFIRMADO = "CONFIRMED";
 	const PAGAMENTO_CANCELADO = "CANCELED";
+	const PAYMENT_CACHE_TOKEN = "payment-";
 
 	//List Payments
 	app.get('/payments', function(req, res) {
@@ -23,19 +24,37 @@ module.exports = function(app) {
 
 	// Get Payment By Id
 	app.get('/payments/payment/:id', function(req, res) {
+
 		console.log('Recebida requisição de pagamento');
 
-		var connection = app.persistence.connectionFactory();
-		var paymentDao = new app.persistence.PaymentDao(connection);
+		var id = req.params.id;
 
-		paymentDao.getById(req.params.id, function(error, result) {
-			if (error) {
-				console.log(error);
-				res.status(500).send(error);
+		var memcachedClient = app.services.memcachedClient();
+		var key = PAYMENT_CACHE_TOKEN + id;
+
+		memcachedClient.get(key, function(error, result) {
+			if (error || !result) {
+				console.log('MISS - key[' + key + '] not found');
+
+				//Getting from the Database
+				var connection = app.persistence.connectionFactory();
+				var paymentDao = new app.persistence.PaymentDao(connection);
+
+				paymentDao.getById(id, function(error, result) {
+					if (error) {
+						console.log(error);
+						res.status(500).send(error);
+					} else {
+						res.status(200).json(result);
+					}
+				});
+
 			} else {
+				console.log('HIT - key[' + key + ']: value: ' + JSON.stringify(result));
 				res.status(200).json(result);
 			}
 		});
+		
 	});
 
 	app.post('/payments/payment', function(req, res) {
@@ -73,6 +92,18 @@ module.exports = function(app) {
 				
 				payment.id = result.insertId;
 
+				var memcachedClient = app.services.memcachedClient();
+				var key = PAYMENT_CACHE_TOKEN + payment.id;
+				memcachedClient.set( key, payment, 60000
+					, function(error) {
+						if (error) {
+							console.log(error);
+						} else {
+							console.log('ADD - key[' + key + ']: value: ' + JSON.stringify(result));
+						}						
+				});
+				//memcachedclient.set('payment-' + payment.id, payment, 6000);
+
 				if (payment.forma_de_pagamento == 'cartao') {
 
 					var card = req.body.card;
@@ -91,7 +122,7 @@ module.exports = function(app) {
 						payment.status = PAGAMENTO_CONFIRMADO;
 						console.log(payment);
 
-						res.location('payments/payment/' + payment.id);
+						res.location('payments/payment/' + payment.id);	
 
 						var response = {
 							payment_data: payment,
@@ -137,6 +168,19 @@ module.exports = function(app) {
 				res.status(500).send(error);
 			} else {
 				console.log('Payment Updated.');
+
+				var memcachedClient = app.services.memcachedClient();
+				var key = PAYMENT_CACHE_TOKEN + payment.id;
+				memcachedClient.set( key, payment, 60000
+					, function(error) {
+						if (error) {
+							console.log(error);
+						} else {
+							console.log('UPDATE - key[' + key + ']: value: ' + JSON.stringify(result));
+						}						
+				});
+
+
 				res.status(200).json(payment);
 			}
 		});
@@ -159,6 +203,18 @@ module.exports = function(app) {
 				res.status(500).send(error);
 			} else {
 				console.log('Payment Canceled.');
+
+				var memcachedClient = app.services.memcachedClient();
+				var key = PAYMENT_CACHE_TOKEN + payment.id;
+				memcachedClient.set( key, payment, 60000
+					, function(error) {
+						if (error) {
+							console.log(error);
+						} else {
+							console.log('UPDATE - key[' + key + ']: value: ' + JSON.stringify(result));
+						}						
+				});
+
 				res.status(204).send(result);
 			}
 		});

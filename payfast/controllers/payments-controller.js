@@ -1,5 +1,9 @@
 module.exports = function(app) {
 
+	const PAGAMENTO_CRIADO = "CREATED";
+	const PAGAMENTO_CONFIRMADO = "CONFIRMED";
+	const PAGAMENTO_CANCELADO = "CANCELED";
+
 	//List Payments
 	app.get('/payments', function(req, res) {
 		console.log('Recebida requisição de pagamentos');
@@ -52,7 +56,7 @@ module.exports = function(app) {
 		var payment = req.body.payment;
 		console.log(payment);
 
-		payment.status = 'CREATED';
+		payment.status = PAGAMENTO_CRIADO;
 		payment.data = new Date;
 
 		var connection = app.persistence.connectionFactory();
@@ -84,7 +88,7 @@ module.exports = function(app) {
 
 						console.log('Payment created.');
 						
-						payment.status = 'CONFIRMADO';
+						payment.status = PAGAMENTO_CONFIRMADO;
 						console.log(payment);
 
 						res.location('payments/payment/' + payment.id);
@@ -122,7 +126,7 @@ module.exports = function(app) {
 
 		var payment = {};
 		payment.id = req.params.id;
-		payment.status = 'CONFIRMADO';
+		payment.status = PAGAMENTO_CONFIRMADO;
 
 		var connection = app.persistence.connectionFactory();
 		var paymentDao = new app.persistence.PaymentDao(connection);
@@ -144,7 +148,7 @@ module.exports = function(app) {
 
 		var payment = {};
 		payment.id = req.params.id;
-		payment.status = 'CANCELADO';
+		payment.status = PAGAMENTO_CANCELADO;
 
 		var connection = app.persistence.connectionFactory();
 		var paymentDao = new app.persistence.PaymentDao(connection);
@@ -155,7 +159,7 @@ module.exports = function(app) {
 				res.status(500).send(error);
 			} else {
 				console.log('Payment Canceled.');
-				res.status(204);
+				res.status(204).send(result);
 			}
 		});
 

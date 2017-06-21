@@ -1,0 +1,9 @@
+curl -v -X POST http://localhost:3000/payments/payment -H "Content-type: application/json" -d @payment.json | json_pp
+
+curl -v -X PUT http://localhost:3000/payments/payment/31 | json_pp
+
+curl -v -X DELETE http://localhost:3000/payments/payment/31 | json_pp
+
+curl -v -X POST http://localhost:3000/correios/delivery-time  -H "Content-type: application/json" -d @correios_delivery_soap_api.json | json_pp
+
+curl -v -X POST http://localhost:3000/upload/image --data-binary @util/image.jpg -H "Content-type: application/octet-stream" -H "filename: image.jpg" | json_pp

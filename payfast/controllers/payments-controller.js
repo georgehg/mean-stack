@@ -106,6 +106,22 @@ module.exports = function(app) {
 				});
 				//memcachedclient.set('payment-' + payment.id, payment, 6000);
 
+				var response = {
+					payment_data: payment,
+					links: [
+						{
+							href: "http://localhost:3000/payments/payment/" + payment.id,
+							rel: "confirm",
+							method: "PUT"
+						},
+						{
+							href: "http://localhost:3000/payments/payment/" + payment.id,
+							rel: "cancel",
+							method: "DELETE"
+						}
+					]
+				}
+
 				if (payment.forma_de_pagamento == 'cartao') {
 
 					var card = req.body.card;
@@ -126,26 +142,16 @@ module.exports = function(app) {
 
 						res.location('payments/payment/' + payment.id);	
 
-						var response = {
-							payment_data: payment,
-							card_authorizaton: serviceResult.card_data,
-							links: [
-								{
-									href: "http://localhost:3000/payments/payment/" + payment.id,
-									rel: "confirm",
-									method: "PUT"
-								},
-								{
-									href: "http://localhost:3000/payments/payment/" + payment.id,
-									rel: "cancel",
-									method: "DELETE"
-								}
-							]
-						}
+						response.card_authorizaton = serviceResult.card_data;
 
 						res.status(201).json(response);
 						return;
 					});
+
+				} else {
+
+					res.status(201).json(response);
+					return;
 
 				}
 

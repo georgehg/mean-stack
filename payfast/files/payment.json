@@ -1,6 +1,6 @@
 {
 	"payment": {
-		"forma_de_pagamento": "payfast",
+		"forma_de_pagamento": "cartao",
 		"valor": "90.58",
 		"moeda": "USD",
 		"descricao": "Pagamento em dolar via Payfast"

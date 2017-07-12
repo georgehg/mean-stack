@@ -1,16 +1,17 @@
 var fs = require('fs');
+var logger = require('../services/logger.js')
 
 module.exports = function(app) {
 
 	app.post('/upload/image', function(req, res) {
 
-		console.log('Receiving image streaming');
+		logger.info('Receiving image streaming');
 
 		var filename = req.headers.filename;
 
 		req.pipe(fs.createWriteStream('files/' + filename ))
 			.on('finish', function() {
-				console.log('File loaded');
+				logger.info('File loaded');
 				res.status(201).send();
 			});
 	});

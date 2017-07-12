@@ -11,10 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "cluster": "^0.7.7",
     "consign": "^0.1.6",
     "express": "^4.15.3",
     "express-validator": "^3.2.0",
     "memcached": "^2.2.2",
+    "morgan": "^1.8.2",
     "mysql": "^2.13.0",
     "nodemon": "^1.11.0",
     "restify": "^4.3.0",

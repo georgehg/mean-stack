@@ -1,0 +1,18 @@
+{
+  "name": "alurapic-mean",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "consign": "^0.1.6",
+    "express": "^4.15.3",
+    "nodemon": "^1.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "georgehg",
+  "license": "ISC",
+  "description": ""
+}

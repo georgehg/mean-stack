@@ -3,14 +3,13 @@ module.exports = function(app) {
 	var mongoose = require('mongoose');
 	var jwt = require('jsonwebtoken');
 
-
 	var api = {};
 	var model = mongoose.model('User');
 
 	api.authenticate = function(req, res) {
 
 		model
-			.findOne({login: req.body.login, senha: reqw.body.senha})
+			.findOne({login: req.body.login, senha: req.body.senha})
 			.then(
 				function(user) {
 					if (!user) {
@@ -26,7 +25,7 @@ module.exports = function(app) {
 						console.log("Token created: " + token);
 
 						res.set('x-access-token', token);
-						res.end;
+						res.end();
 
 					}
 
@@ -50,7 +49,7 @@ module.exports = function(app) {
 				function(err, decoded){
 					if (err) {
 						console.log("Token rejeitado");
-						res.sendStatus(403);
+						res.sendStatus(401);
 					}
 
 					req.user = decoded;
@@ -59,7 +58,7 @@ module.exports = function(app) {
 			);
 		} else {
 			console.log("Token not set");
-			res.sendStatus(403);
+			res.sendStatus(401);
 		}
 
 	};
